@@ -54,27 +54,53 @@ Project 1 - Analysis and Reporting
 
 
 Which program is fastest? Is it always the fastest?
-alloca.out and malloc.out
+The fastest program was malloc.cpp averaging around 0.008000 seconds in the trial, but it is not necessarily always the fastest as seen in the times above.
 
 Which program is slowest? Is it always the slowest?
-new.out is the slowest but 
+The slowest program was list.cpp with an average time of 0.020000 seconds, but it is not necessarily always the slowest as seen in the times above.
 
 Was there a trend in program execution time based on the size of data in each Node? If so, what, and why?
+Yes, as the size of data increases so does execution time. More bytes have to be processed in the hash() function leading to the cost of allocation to be less significant compared to the computational complexity.
 
 
 Was there a trend in program execution time based on the length of the block chain?
-
+Yes, as the number of nodes increases so does execution time.
 
 Consider heap breaks, what's noticeable? Does increasing the stack size affect the heap? Speculate on any similarities and differences in programs?
-Considering either the malloc.cpp or alloca.cpp versions of the program, generate a diagram showing two Nodes. Include in the diagram
+The number of heap breaks was relatively similar across the programs that use heap allocation such as malloc.cpp, new.cpp, and list.cpp, because they all 
+request memory dynamically from the heap as the list grows. The alloca.cpp program showed fewer or different heap break behavior since it allocates memory 
+on the stack instead of the heap. Increasing the stack size does not directly affect the heap because they are separate memory regions, but it allows 
+alloca.cpp to handle larger recursion depths without crashing. The main similarity is that all programs allocate memory for nodes, while the key difference 
+is whether that memory comes from the heap or the stack.
 
-    the relationship of the head, tail, and Node next pointers.
-    show the size (in bytes) and structure of a Node that allocated six bytes of data
-    include the bytes pointer, and indicate using an arrow which byte in the allocated memory it points to.
+Considering either the malloc.cpp or alloca.cpp versions of the program, generate a diagram showing two Nodes. Include in the diagram the relationship 
+of the head, tail, and Node next pointers. show the size (in bytes) and structure of a Node that allocated six bytes of data include the bytes pointer, 
+and indicate using an arrow which byte in the allocated memory it points to.
+
+head -> Node1 -> Node2 -> ... -> NodeN -> nullptr
+        |         |                ^
+        v         v                |
+       data      data             tail
+
+_________________________
+|next ptr (8 bytes)     |
+_________________________
+|numBytes = 6 (4 bytes) |
+|(4 bytes unused)       |
+_________________________
+|bytes ptr (8 bytes)    |
+_________________________
+allocated in memory         [byte1][byte2][byte3][byte4][byte5][byte6]
+                               ^- bytes ptr
+
+
+
 
 
 
 There's an overhead to allocating memory, initializing it, and eventually processing (in our case, hashing it). For each program, were any of these tasks the same? Which one(s) were different?
-
+All programs initialize data, compute hash, and traverse the list. The differences lie with alloca.cpp using stack allocation, malloc using heap (C) allocation, new using heap (C++) allocation, and list using STL.
 
 As the size of data in a Node increases, does the significance of allocating the node increase or decrease?
+As data increases, the significance of allocating the node decreases. This is because when the node is small allocation overhead is primarily impacting runtime as opposed to when the node is large such that computation 
+time overtakes the overhead of allocating the node.
